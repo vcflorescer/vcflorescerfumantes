@@ -8,6 +8,7 @@ import {
 const app = express();
 
 app.use(express.json());
+app.use(express.static("frontend/dist"));
 
 function autenticar(req, res, next) {
   const chave = req.headers["x-api-key"];
