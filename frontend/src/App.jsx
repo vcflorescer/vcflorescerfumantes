@@ -25,7 +25,7 @@ function App() {
     setCarregando(true);
 
     try {
-      const respostaApi = await fetch("/mensagem", {
+      const respostaApi = await fetch("/api/mensagem", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
