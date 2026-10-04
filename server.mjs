@@ -29,6 +29,36 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.post("/api/mensagem", async (req, res) => {
+  try {
+    const { patientId, mensagem } = req.body;
+
+    if (!patientId || !mensagem) {
+      return res.status(400).json({
+        erro: "patientId e mensagem são obrigatórios."
+      });
+    }
+
+    const session = await obterSessao(patientId);
+
+    const resultado = await run(
+      agente,
+      mensagem,
+      { session }
+    );
+
+    res.json({
+      patientId,
+      resposta: resultado.finalOutput
+    });
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({
+      erro: "Erro ao processar mensagem."
+    });
+  }
+});
+
 app.post("/mensagem", autenticar, async (req, res) => {
   try {
     const { patientId, mensagem } = req.body;
