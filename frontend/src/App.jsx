@@ -106,6 +106,15 @@ function App() {
       const dados = await respostaApi.json();
 
       if (!respostaApi.ok) {
+        if (respostaApi.status === 401) {
+          sessionStorage.removeItem("flor_patient_id");
+          sessionStorage.removeItem("flor_auth_token");
+          setPatientId("");
+          setToken("");
+          setErroLogin("Sua sessão expirou. Entre novamente.");
+          return;
+        }
+
         throw new Error(dados.erro || "Erro na API.");
       }
 
