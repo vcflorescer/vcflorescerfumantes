@@ -2,6 +2,7 @@ import { useState } from "react";
 
 function App() {
   const [mensagem, setMensagem] = useState("");
+  const [patientId, setPatientId] = useState("");
   const [mensagens, setMensagens] = useState([
     {
       tipo: "flor",
@@ -31,7 +32,7 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          patientId: "teste-api",
+          patientId,
           mensagem: texto,
         }),
       });
@@ -86,6 +87,16 @@ function App() {
           </div>
         )}
       </section>
+
+      {!patientId && (
+        <div className="identificacao">
+          <input
+            value={patientId}
+            onChange={(event) => setPatientId(event.target.value)}
+            placeholder="Digite seu código de paciente"
+          />
+        </div>
+      )}
 
       <form className="formulario" onSubmit={enviarMensagem}>
         <input
