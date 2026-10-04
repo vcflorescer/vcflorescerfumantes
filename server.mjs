@@ -11,6 +11,26 @@ const app = express();
 app.use(express.json());
 app.use(express.static("frontend/dist"));
 
+const limiteLogin = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    erro: "Muitas tentativas de login. Tente novamente mais tarde."
+  }
+});
+
+const limiteMensagens = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    erro: "Muitas mensagens em pouco tempo. Aguarde um momento."
+  }
+});
+
 const sessoesAutenticadas = new Map();
 const DURACAO_TOKEN_MS = 1000 * 60 * 60 * 8;
 
@@ -66,7 +86,7 @@ app.get("/health", (req, res) => {
   });
 });
 
-app.post("/api/login", async (req, res) => {
+app.post("/api/login", limiteLogin, async (req, res) => {
   try {
     const { patientId, segredo } = req.body;
 
@@ -106,7 +126,7 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-app.post("/api/mensagem", async (req, res) => {
+app.post("/api/mensagem", limiteMensagens, async (req, res) => {
   try {
     const sessaoAutenticada = validarToken(req);
 
