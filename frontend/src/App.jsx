@@ -94,6 +94,9 @@ function App() {
           onChange={(event) => setPatientId(event.target.value)}
           placeholder="Digite seu código de paciente"
         />
+        <button type="button" disabled={!patientId.trim()}>
+          Entrar
+        </button>
       </div>
 
       <form className="formulario" onSubmit={enviarMensagem}>
