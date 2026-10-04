@@ -88,15 +88,13 @@ function App() {
         )}
       </section>
 
-      {!patientId && (
-        <div className="identificacao">
-          <input
-            value={patientId}
-            onChange={(event) => setPatientId(event.target.value)}
-            placeholder="Digite seu código de paciente"
-          />
-        </div>
-      )}
+      <div className="identificacao">
+        <input
+          value={patientId}
+          onChange={(event) => setPatientId(event.target.value)}
+          placeholder="Digite seu código de paciente"
+        />
+      </div>
 
       <form className="formulario" onSubmit={enviarMensagem}>
         <input
