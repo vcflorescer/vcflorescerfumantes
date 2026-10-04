@@ -91,8 +91,8 @@ app.post("/mensagem", autenticar, async (req, res) => {
   }
 });
 
-const PORTA = 3000;
+const PORTA = process.env.PORT || 3000;
 
-app.listen(PORTA, () => {
+app.listen(PORTA, "0.0.0.0", () => {
   console.log(`Flor T. API rodando em http://localhost:${PORTA}`);
 });
