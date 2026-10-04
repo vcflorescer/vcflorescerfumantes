@@ -29,6 +29,40 @@ app.get("/health", (req, res) => {
   });
 });
 
+app.post("/api/login", async (req, res) => {
+  try {
+    const { patientId, segredo } = req.body;
+
+    if (!patientId || !segredo) {
+      return res.status(400).json({ erro: "Código e segredo são obrigatórios." });
+    }
+
+    const hashEsperado = process.env[`FLOR_PATIENT_${patientId}_HASH`];
+
+    if (!hashEsperado) {
+      return res.status(401).json({ erro: "Código ou segredo inválido." });
+    }
+
+    const crypto = await import("node:crypto");
+    const hashRecebido = crypto.createHash("sha256").update(segredo).digest("hex");
+
+    if (
+      hashRecebido.length !== hashEsperado.length ||
+      !crypto.timingSafeEqual(
+        Buffer.from(hashRecebido),
+        Buffer.from(hashEsperado)
+      )
+    ) {
+      return res.status(401).json({ erro: "Código ou segredo inválido." });
+    }
+
+    res.json({ autenticado: true, patientId });
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({ erro: "Erro ao autenticar." });
+  }
+});
+
 app.post("/api/mensagem", async (req, res) => {
   try {
     const { patientId, mensagem } = req.body;
