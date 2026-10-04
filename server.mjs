@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import express from "express";
 import { run } from "@openai/agents";
 import {
@@ -9,6 +10,42 @@ const app = express();
 
 app.use(express.json());
 app.use(express.static("frontend/dist"));
+
+const sessoesAutenticadas = new Map();
+const DURACAO_TOKEN_MS = 1000 * 60 * 60 * 8;
+
+function criarToken(patientId) {
+  const token = crypto.randomBytes(32).toString("hex");
+
+  sessoesAutenticadas.set(token, {
+    patientId,
+    expiraEm: Date.now() + DURACAO_TOKEN_MS,
+  });
+
+  return token;
+}
+
+function validarToken(req) {
+  const cabecalho = req.headers.authorization || "";
+
+  if (!cabecalho.startsWith("Bearer ")) {
+    return null;
+  }
+
+  const token = cabecalho.slice(7);
+  const sessao = sessoesAutenticadas.get(token);
+
+  if (!sessao) {
+    return null;
+  }
+
+  if (Date.now() > sessao.expiraEm) {
+    sessoesAutenticadas.delete(token);
+    return null;
+  }
+
+  return sessao;
+}
 
 function autenticar(req, res, next) {
   const chave = req.headers["x-api-key"];
@@ -56,7 +93,13 @@ app.post("/api/login", async (req, res) => {
       return res.status(401).json({ erro: "Código ou segredo inválido." });
     }
 
-    res.json({ autenticado: true, patientId });
+    const token = criarToken(patientId);
+
+    res.json({
+      autenticado: true,
+      patientId,
+      token,
+    });
   } catch (erro) {
     console.error(erro);
     res.status(500).json({ erro: "Erro ao autenticar." });
@@ -65,11 +108,25 @@ app.post("/api/login", async (req, res) => {
 
 app.post("/api/mensagem", async (req, res) => {
   try {
+    const sessaoAutenticada = validarToken(req);
+
+    if (!sessaoAutenticada) {
+      return res.status(401).json({
+        erro: "Sessão inválida ou expirada."
+      });
+    }
+
     const { patientId, mensagem } = req.body;
 
     if (!patientId || !mensagem) {
       return res.status(400).json({
         erro: "patientId e mensagem são obrigatórios."
+      });
+    }
+
+    if (patientId !== sessaoAutenticada.patientId) {
+      return res.status(403).json({
+        erro: "Paciente não autorizado."
       });
     }
 

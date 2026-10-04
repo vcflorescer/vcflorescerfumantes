@@ -4,6 +4,10 @@ function App() {
   const [patientId, setPatientId] = useState(
     () => sessionStorage.getItem("flor_patient_id") || ""
   );
+
+  const [token, setToken] = useState(
+    () => sessionStorage.getItem("flor_auth_token") || ""
+  );
   const [codigoDigitado, setCodigoDigitado] = useState(
     () => sessionStorage.getItem("flor_patient_id") || ""
   );
@@ -31,6 +35,7 @@ function App() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           patientId: codigo,
@@ -45,7 +50,9 @@ function App() {
       }
 
       sessionStorage.setItem("flor_patient_id", codigo);
+      sessionStorage.setItem("flor_auth_token", dados.token);
       setPatientId(codigo);
+      setToken(dados.token);
       setSegredo("");
     } catch (erro) {
       setErroLogin(erro.message);
@@ -54,7 +61,9 @@ function App() {
 
   function sair() {
     sessionStorage.removeItem("flor_patient_id");
+    sessionStorage.removeItem("flor_auth_token");
     setPatientId("");
+    setToken("");
     setCodigoDigitado("");
     setSegredo("");
     setErroLogin("");
