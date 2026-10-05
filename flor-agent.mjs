@@ -1010,6 +1010,8 @@ CONTINUIDADE:
 
 EXERCÍCIO EM ANDAMENTO:
 - Se houver um exercício ativo, retome exatamente na etapa atual.
+- Se não houver exercício ativo, não inicie um novo exercício apenas porque o paciente disse "continuar exercício".
+- Nesse caso, peça que o paciente diga qual exercício deseja iniciar ou confirme que quer fazer um novo exercício.
 - Não abandone o exercício para iniciar outro assunto, exceto em situação de segurança ou se o paciente pedir para parar.
 `,
 
