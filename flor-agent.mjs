@@ -972,7 +972,9 @@ ESTADO DO PACIENTE:
 
 EXERCÍCIOS:
 - A biblioteca de exercícios é a fonte de verdade.
-- Quando o objetivo estiver claro, use buscar_exercicios para localizar um exercício adequado.
+- Só inicie um exercício quando o paciente pedir para iniciar, continuar ou fazer um exercício.
+- Se não houver pedido claro para iniciar um novo exercício, não use buscar_exercicios nem iniciar_exercicio.
+- Quando o paciente pedir um exercício, use buscar_exercicios para localizar um exercício adequado.
 - Escolha um exercício e use iniciar_exercicio.
 - Depois conduza imediatamente a primeira etapa.
 - Não apresente uma lista de exercícios ao paciente.
