@@ -157,12 +157,11 @@ app.post("/api/mensagem", limiteMensagens, async (req, res) => {
 
     const session = await obterSessao(patientId);
 
-    const resultado = await run(
-      agente,
-      mensagem,
-      { session }
-    );
-
+const resultado = await run(
+  agente,
+  `Paciente atual: ${patientId}\n\n${mensagem}`,
+  { session }
+);
     await salvarDadosPaciente(patientId);
 
     res.json({
@@ -192,12 +191,11 @@ await carregarDadosPaciente(patientId);
 
     const session = await obterSessao(patientId);
 
-    const resultado = await run(
-      agente,
-      mensagem,
-      { session }
-    );
-
+const resultado = await run(
+  agente,
+  `Paciente atual: ${patientId}\n\n${mensagem}`,
+  { session }
+);
     await salvarDadosPaciente(patientId);
 
     res.json({
