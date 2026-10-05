@@ -438,11 +438,7 @@ const iniciarExercicio = tool({
       ...estadoExercicio,
     };
 
-    salvarDados({
-      ...dadosPersistidos,
-      exercicios:
-        dadosExerciciosPersistidos,
-    });
+    await salvarDadosPaciente(patientId);
 
     return JSON.stringify({
       sucesso: true,
@@ -597,13 +593,7 @@ const responderExercicio = tool({
         {}
       );
 
-      salvarDados({
-        ...dadosPersistidos,
-        exercicios:
-          dadosExerciciosPersistidos,
-        estadosPaciente:
-          estadosPacientePersistidos,
-      });
+      await salvarDadosPaciente(patientId);
 
       return JSON.stringify({
         sucesso: true,
@@ -623,11 +613,7 @@ const responderExercicio = tool({
       ...estado,
     };
 
-    salvarDados({
-      ...dadosPersistidos,
-      exercicios:
-        dadosExerciciosPersistidos,
-    });
+    await salvarDadosPaciente(patientId);
 
     return JSON.stringify({
       sucesso: true,
