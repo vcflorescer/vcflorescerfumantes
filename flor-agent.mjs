@@ -249,7 +249,6 @@ const consultarExercicio = tool({
   }),
 
   execute: async ({ id }) => {
-    console.log("INICIAR_EXERCICIO CHAMADO:", id, patientId);
     const exercicio =
       exercicios.find(
         (item) =>
@@ -300,7 +299,6 @@ const buscarExercicios = tool({
   }),
 
   execute: async ({
-    console.log("INICIAR_EXERCICIO CHAMADO:", id, patientId);
     contexto,
     intensidade,
   }) => {
@@ -405,7 +403,6 @@ const iniciarExercicio = tool({
   }),
 
   execute: async ({
-    console.log("INICIAR_EXERCICIO CHAMADO:", id, patientId);
     id,
     patientId,
   }) => {
@@ -485,7 +482,6 @@ const responderExercicio = tool({
   }),
 
   execute: async ({
-    console.log("INICIAR_EXERCICIO CHAMADO:", id, patientId);
     resposta,
     patientId,
   }) => {
@@ -656,7 +652,6 @@ const consultarEstadoPaciente = tool({
   }),
 
   execute: async ({
-    console.log("INICIAR_EXERCICIO CHAMADO:", id, patientId);
     patientId,
   }) => {
     const estado =
@@ -733,7 +728,6 @@ const atualizarEstadoPacienteTool =
     }),
 
     execute: async ({
-    console.log("INICIAR_EXERCICIO CHAMADO:", id, patientId);
       patientId,
       objetivoAtual,
       nivelMotivacao,
@@ -889,7 +883,6 @@ const gerarResumoPaciente =
     }),
 
     execute: async ({
-    console.log("INICIAR_EXERCICIO CHAMADO:", id, patientId);
       patientId,
     }) => {
       const estado =
