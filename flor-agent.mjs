@@ -1,3 +1,105 @@
+import "dotenv/config";
+import { createClient } from "@supabase/supabase-js";
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
+async function carregarDadosPaciente(patientId) {
+  const { data, error } = await supabase
+    .from("sessoes")
+    .select("dados")
+    .eq("patient_id", patientId)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`Erro ao carregar dados do paciente: ${error.message}`);
+  }
+
+  const dadosPaciente = data?.dados || {};
+
+  if (!dadosPersistidos.conversas) {
+    dadosPersistidos.conversas = {};
+  }
+
+  if (!dadosPersistidos.estadosPaciente) {
+    dadosPersistidos.estadosPaciente = {};
+  }
+
+  if (!dadosPersistidos.exercicios) {
+    dadosPersistidos.exercicios = {};
+  }
+
+  if (dadosPaciente.conversas?.[patientId]) {
+    dadosPersistidos.conversas[patientId] =
+      dadosPaciente.conversas[patientId];
+  }
+
+  if (dadosPaciente.estadosPaciente?.[patientId]) {
+    estadosPacientePersistidos[patientId] =
+      dadosPaciente.estadosPaciente[patientId];
+  }
+
+  if (dadosPaciente.exercicios?.[patientId]) {
+    dadosExerciciosPersistidos[patientId] =
+      dadosPaciente.exercicios[patientId];
+  }
+
+  
+return dadosPaciente;
+}
+
+async function salvarDadosPaciente(patientId) {
+  const dadosPaciente = {
+    conversas: {
+      [patientId]: dadosPersistidos.conversas?.[patientId] || null,
+    },
+    estadosPaciente: {
+      [patientId]: estadosPacientePersistidos[patientId] || null,
+    },
+    exercicios: {
+      [patientId]: dadosExerciciosPersistidos[patientId] || null,
+    },
+  };
+
+  const { data: existente, error: erroBusca } = await supabase
+    .from("sessoes")
+    .select("id")
+    .eq("patient_id", patientId)
+    .limit(1)
+    .maybeSingle();
+
+  if (erroBusca) {
+    throw new Error(`Erro ao localizar sessão: ${erroBusca.message}`);
+  }
+
+  if (existente) {
+    const { error } = await supabase
+      .from("sessoes")
+      .update({
+        dados: dadosPaciente,
+        atualizado_em: new Date().toISOString(),
+      })
+      .eq("id", existente.id);
+
+    if (error) {
+      throw new Error(`Erro ao salvar sessão: ${error.message}`);
+    }
+  } else {
+    const { error } = await supabase
+      .from("sessoes")
+      .insert({
+        patient_id: patientId,
+        dados: dadosPaciente,
+      });
+
+    if (error) {
+      throw new Error(`Erro ao criar sessão: ${error.message}`);
+    }
+  }
+}
+
+
 import {
   Agent,
   OpenAIConversationsSession,
@@ -1001,6 +1103,8 @@ export {
   obterSessao,
   obterEstadoPaciente,
   obterEstadoExercicio,
+  carregarDadosPaciente,
+  salvarDadosPaciente
 };
 
 export {
