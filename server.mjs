@@ -10,6 +10,7 @@ import {
 } from "./flor-agent.mjs";
 
 const app = express();
+app.set("trust proxy", 1);
 
 app.use(express.json());
 app.use(express.static("frontend/dist"));
