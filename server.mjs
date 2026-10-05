@@ -1,9 +1,13 @@
+import rateLimit from "express-rate-limit";
+import rateLimit from "express-rate-limit";
 import crypto from "node:crypto";
 import express from "express";
 import { run } from "@openai/agents";
 import {
   agente,
   obterSessao,
+  carregarDadosPaciente,
+  salvarDadosPaciente,
 } from "./flor-agent.mjs";
 
 const app = express();
@@ -137,6 +141,7 @@ app.post("/api/mensagem", limiteMensagens, async (req, res) => {
     }
 
     const { patientId, mensagem } = req.body;
+    console.log("MENSAGEM RECEBIDA:", patientId, mensagem);
 
     if (!patientId || !mensagem) {
       return res.status(400).json({
@@ -158,6 +163,8 @@ app.post("/api/mensagem", limiteMensagens, async (req, res) => {
       { session }
     );
 
+    await salvarDadosPaciente(patientId);
+
     res.json({
       patientId,
       resposta: resultado.finalOutput
@@ -173,12 +180,15 @@ app.post("/api/mensagem", limiteMensagens, async (req, res) => {
 app.post("/mensagem", autenticar, async (req, res) => {
   try {
     const { patientId, mensagem } = req.body;
+    console.log("MENSAGEM RECEBIDA:", patientId, mensagem);
 
     if (!patientId || !mensagem) {
       return res.status(400).json({
         erro: "patientId e mensagem são obrigatórios."
       });
     }
+
+await carregarDadosPaciente(patientId);
 
     const session = await obterSessao(patientId);
 
@@ -187,6 +197,8 @@ app.post("/mensagem", autenticar, async (req, res) => {
       mensagem,
       { session }
     );
+
+    await salvarDadosPaciente(patientId);
 
     res.json({
       patientId,
