@@ -5,6 +5,8 @@ function App() {
     () => sessionStorage.getItem("flor_patient_id") || ""
   );
 
+const [consentimento, setConsentimento] = useState(false);
+
   const [token, setToken] = useState(
     () => sessionStorage.getItem("flor_auth_token") || ""
   );
@@ -146,6 +148,27 @@ function App() {
       </header>
 
       {!patientId ? (
+<>
+<div className="consentimento">
+  <h3>Privacidade e consentimento</h3>
+  <p>
+    Este aplicativo registra informações fornecidas durante as sessões
+    para acompanhar sua evolução e personalizar as orientações.
+  </p>
+  <p>
+    Seus dados devem ser tratados de forma segura e usados somente
+    para a finalidade informada.
+  </p>
+
+  <label>
+    <input
+      type="checkbox"
+      checked={consentimento}
+      onChange={(e) => setConsentimento(e.target.checked)}
+    />
+    {" "}Li e concordo com o uso dos meus dados conforme a Política de Privacidade.
+  </label>
+</div>
         <section className="identificacao">
           <h2>Identificação</h2>
 
@@ -175,7 +198,7 @@ function App() {
             <button
               type="button"
               onClick={entrar}
-              disabled={!codigoDigitado.trim() || !segredo.trim()}
+disabled={!codigoDigitado.trim() || !segredo.trim() || !consentimento}
             >
               Entrar
             </button>
@@ -183,6 +206,7 @@ function App() {
 
           {erroLogin && <p className="erro-login">{erroLogin}</p>}
         </section>
+</>
       ) : (
         <>
           <div className="paciente-logado">
