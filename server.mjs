@@ -141,7 +141,6 @@ app.post("/api/mensagem", limiteMensagens, async (req, res) => {
     }
 
     const { patientId, mensagem } = req.body;
-    console.log("MENSAGEM RECEBIDA:", patientId, mensagem);
 
     if (!patientId || !mensagem) {
       return res.status(400).json({
@@ -179,7 +178,6 @@ const resultado = await run(
 app.post("/mensagem", autenticar, async (req, res) => {
   try {
     const { patientId, mensagem } = req.body;
-    console.log("MENSAGEM RECEBIDA:", patientId, mensagem);
 
     if (!patientId || !mensagem) {
       return res.status(400).json({
