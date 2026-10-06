@@ -49,6 +49,39 @@ async function carregarDadosPaciente(patientId) {
 return dadosPaciente;
 }
 
+async function registrarConsentimento(patientId) {
+  const estado = obterEstadoPaciente(patientId);
+
+  await salvarDadosPaciente(patientId);
+
+  const { data: existente, error: erroBusca } = await supabase
+    .from("sessoes")
+    .select("id, dados")
+    .eq("patient_id", patientId)
+    .limit(1)
+    .maybeSingle();
+
+  if (erroBusca) throw new Error(`Erro ao localizar sessão: ${erroBusca.message}`);
+
+  const dados = existente?.dados || {};
+  dados.consentimento = {
+    aceito: true,
+    aceitoEm: new Date().toISOString(),
+  };
+
+  if (existente) {
+    const { error } = await supabase
+      .from("sessoes")
+      .update({
+        dados,
+        atualizado_em: new Date().toISOString(),
+      })
+      .eq("id", existente.id);
+
+    if (error) throw new Error(`Erro ao registrar consentimento: ${error.message}`);
+  }
+}
+
 async function salvarDadosPaciente(patientId) {
   const dadosPaciente = {
     conversas: {
@@ -1094,7 +1127,8 @@ export {
   obterEstadoPaciente,
   obterEstadoExercicio,
   carregarDadosPaciente,
-  salvarDadosPaciente
+  salvarDadosPaciente,
+  registrarConsentimento
 };
 
 export {

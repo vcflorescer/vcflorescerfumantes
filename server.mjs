@@ -6,7 +6,8 @@ import {
   agente,
   obterSessao,
   carregarDadosPaciente,
-  salvarDadosPaciente,
+salvarDadosPaciente,
+registrarConsentimento,
 } from "./flor-agent.mjs";
 
 const app = express();
@@ -92,8 +93,7 @@ app.get("/health", (req, res) => {
 
 app.post("/api/login", limiteLogin, async (req, res) => {
   try {
-    const { patientId, segredo } = req.body;
-
+const { patientId, segredo, consentimento } = req.body;
     if (!patientId || !segredo) {
       return res.status(400).json({ erro: "Código e segredo são obrigatórios." });
     }
@@ -118,6 +118,9 @@ app.post("/api/login", limiteLogin, async (req, res) => {
     }
 
     const token = criarToken(patientId);
+    if (consentimento === true) {
+      await registrarConsentimento(patientId);
+    }
 
     res.json({
       autenticado: true,

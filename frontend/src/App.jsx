@@ -41,6 +41,7 @@ const [consentimento, setConsentimento] = useState(false);
         body: JSON.stringify({
           patientId: codigo,
           segredo: senha,
+consentimento: true,
         }),
       });
 
